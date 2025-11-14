@@ -37,6 +37,7 @@
 </div>
 
 <script>
+  const BACKEND_URL = "https://amazon-post-generator-backend.onrender.com"
 async function generatePost() {
   const description = document.getElementById('description').value;
   const originalPrice = document.getElementById('originalPrice').value;
@@ -49,7 +50,7 @@ async function generatePost() {
 
   try {
     // Send description to backend to rewrite + add fitting emojis + catchy title
-    const response = await fetch('/api/rewrite', {
+    const response = await fetch('${BACKEND_URL}/api/rewrite', {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({ text: description, model })
