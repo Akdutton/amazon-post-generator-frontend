@@ -50,7 +50,7 @@ async function generatePost() {
 
   try {
     // Send description to backend to rewrite + add fitting emojis + catchy title
-    const response = await fetch('${BACKEND_URL}/api/rewrite', {
+    const response = await fetch(`${BACKEND_URL}/api/rewrite`, {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({ text: description, model })
