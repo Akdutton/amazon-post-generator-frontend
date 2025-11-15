@@ -26,9 +26,9 @@
   <input id="url" type="text" placeholder="Product URL">
 
   <select id="modelSelect">
-    <option value="gpt-4o-mini">GPT-4o-Mini</option>
-    <option value="gpt-3o-mini">GPT-3o-Mini</option>
-    <option value="mistral-7b">Mistral-7B</option>
+    <option value="mistralai/mistral-7b-instruct">Mistral 7B Instruct</option>
+    <option value="deepseek/deepseek-r1">DeepSeek R1</option>
+    <option value="deepseek/deepseek-r1-distill-qwen-14b">DeepSeek R1 Distill Qwen 14B</option>
   </select>
 
   <button onclick="generatePost()">Generate Post</button>
@@ -47,7 +47,7 @@ async function generatePost() {
   const model = document.getElementById('modelSelect').value;
   
   const saveAmount = (parseFloat(originalPrice) - parseFloat(discountPrice)).toFixed(2);
-
+  const percentageOff = Math.round(((originalPrice - discountPrice) / originalPrice) *100);
   try {
     // Send description to backend to rewrite + add fitting emojis + catchy title
     const response = await fetch(`${BACKEND_URL}/api/rewrite`, {
@@ -61,7 +61,7 @@ async function generatePost() {
     const aiTitle = data.title || "Awesome Product!"; // Backend can return title
 
     const post = `#ad
-🔥 50% OFF! 🔥
+🔥 ${percentageOff} OFF! 🔥
 💰 Was: ${originalPrice}
 ✨ Now: ${discountPrice}
 💵 Save $${saveAmount}!
