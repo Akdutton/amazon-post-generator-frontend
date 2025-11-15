@@ -1,15 +1,26 @@
 {
-  "name": "amazon-post-generator",
+  "name": "server",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Akdutton/amazon-post-generator-backend.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Akdutton/amazon-post-generator-backend/issues"
+  },
+  "homepage": "https://github.com/Akdutton/amazon-post-generator-backend#readme",
   "dependencies": {
+    "body-parser": "^2.2.0",
+    "cors": "^2.8.5",
     "dotenv": "^17.2.3",
     "express": "^5.1.0",
     "node-fetch": "^3.3.2"
