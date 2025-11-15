@@ -58,7 +58,7 @@ async function generatePost() {
 
     const data = await response.json();
     const aiDescription = data.output || description;
-    const aiTitle = data.title || "Awesome Product!"; // Backend can return title
+    const aiTitle = data.title || ""; // Backend can return title
 
     const post = `#ad
 🔥 ${percentageOff} OFF! 🔥
