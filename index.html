@@ -98,9 +98,9 @@
       }
 
       outputArea.textContent = "Generating...";
-
+      const backendUrl = "https://amazon-post-generator-backend.onrender.com";
       try {
-        const response = await fetch("/api/rewrite", {
+        const response = await fetch(`${backendUrl}/api/rewrite`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ text, url, code, model })
