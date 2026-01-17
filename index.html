@@ -1,103 +1,134 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Amazon Post Generator</title>
-<style>
-body { font-family: Arial,sans-serif; background: #fff5f8; padding: 20px; margin:0; }
-h1 { color: #e91e63; text-align:center; }
-.container { max-width:500px; margin:auto; background:#fff; padding:20px; border-radius:12px; box-shadow:0 6px 12px rgba(0,0,0,0.1); }
-textarea,input,select { width:100%; padding:10px; margin:10px 0 20px; border-radius:8px; border:1px solid #ccc; font-size:16px; }
-button { background:#ff4081; color:#fff; border:none; padding:12px; width:100%; border-radius:8px; font-size:16px; cursor:pointer; transition:0.3s; }
-button:hover { background:#e91e63; }
-button:disabled { background:#ccc; cursor:not-allowed; }
-.output { background:#f0f4c3; padding:15px; border-radius:10px; font-size:16px; white-space:pre-wrap; line-height:1.5; margin-bottom:10px; }
-.copy-btn { background:#4caf50; margin-top:10px; }
-.copy-btn:hover { background:#45a049; }
-.clear-btn { background:#9e9e9e; margin-top:10px; }
-.clear-btn:hover { background:#757575; }
-.button-group { display:flex; gap:10px; margin-top:10px; }
-.button-group button { flex:1; }
-.loading { display:inline-block; }
-.loading:after { content:'...'; animation:dots 1.5s steps(4,end) infinite; }
-@keyframes dots { 0%,20%{content:'.';} 40%{content:'..';} 60%,100%{content:'...';} }
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Amazon Post Generator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f5f5;
+      color: #333;
+      padding: 20px;
+    }
+    .container {
+      max-width: 600px;
+      margin: auto;
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+    textarea, input, select, button {
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+    }
+    button {
+      background: #007bff;
+      color: white;
+      cursor: pointer;
+      border: none;
+    }
+    button:hover {
+      background: #0056b3;
+    }
+    .output {
+      margin-top: 15px;
+      padding: 10px;
+      border: 1px dashed #007bff;
+      border-radius: 6px;
+      background: #e9f2ff;
+      white-space: pre-wrap;
+    }
+    .btn-inline {
+      width: auto;
+      display: inline-block;
+      margin-top: 5px;
+      margin-right: 5px;
+    }
+  </style>
 </head>
 <body>
-<div class="container">
-  <h1>Amazon Post Generator</h1>
-  <textarea id="description" rows="6" placeholder="Paste product description..."></textarea>
-  <input id="code" type="text" placeholder="Discount Code (optional)">
-  <input id="url" type="text" placeholder="Product URL">
-  <select id="modelSelect">
-    <option value="mistralai/mistral-7b-instruct:free">Mistral 7B (Free)</option>
-  </select>
-  <button id="generateBtn" onclick="generatePost()">Generate Post</button>
-  <div class="output" id="postOutput">Your post will appear here...</div>
-  <div class="button-group">
-    <button class="copy-btn" onclick="copyToClipboard(event)">📋 Copy</button>
-    <button class="clear-btn" onclick="clearForm()">🗑️ Clear</button>
+  <div class="container">
+    <h2>Amazon Post Generator</h2>
+
+    <label for="textInput">Product Description:</label>
+    <textarea id="textInput" rows="4"></textarea>
+
+    <label for="urlInput">Product Link:</label>
+    <input type="url" id="urlInput" placeholder="https://example.com/product">
+
+    <label for="codeInput">Discount Code (optional):</label>
+    <input type="text" id="codeInput" placeholder="Enter code if any">
+
+    <label for="modelSelect">Choose AI Model:</label>
+    <select id="modelSelect">
+      <option value="mistralai/mistral-7b-instruct:free">Mistral 7B (Free)</option>
+      <option value="google/gemma-2-9b-it:free">Gemma 2 9B (Free)</option>
+      <option value="meta-llama/llama-3.2-3b-instruct:free">Llama 3.2 3B (Free)</option>
+      <option value="microsoft/phi-3-mini-128k-instruct:free">Phi‑3 Mini (Free)</option>
+    </select>
+
+    <button id="generateBtn">Generate Post</button>
+
+    <div class="output" id="outputArea"></div>
+    <button class="btn-inline" id="copyBtn">Copy</button>
+    <button class="btn-inline" id="clearBtn">Clear</button>
   </div>
-</div>
 
-<script>
-const BACKEND_URL = "https://amazon-post-generator-backend.onrender.com";
+  <script>
+    const generateBtn = document.getElementById("generateBtn");
+    const outputArea = document.getElementById("outputArea");
+    const copyBtn = document.getElementById("copyBtn");
+    const clearBtn = document.getElementById("clearBtn");
 
-async function generatePost() {
-  const outputDiv = document.getElementById('postOutput');
-  const generateBtn = document.getElementById('generateBtn');
-  const description = document.getElementById('description').value.trim();
-  const code = document.getElementById('code').value.trim();
-  const url = document.getElementById('url').value.trim();
-  const model = document.getElementById('modelSelect').value;
+    generateBtn.addEventListener("click", async () => {
+      const text = document.getElementById("textInput").value.trim();
+      const url = document.getElementById("urlInput").value.trim();
+      const code = document.getElementById("codeInput").value.trim();
+      const model = document.getElementById("modelSelect").value;
 
-  if(!description || !url) { alert('Description and URL required'); return; }
+      if (!text || !url) {
+        alert("Please enter both description and product link.");
+        return;
+      }
 
-  generateBtn.disabled = true;
-  generateBtn.innerHTML = '<span class="loading">Generating</span>';
-  outputDiv.innerText = 'Generating post...';
+      outputArea.textContent = "Generating...";
 
-  try {
-    const res = await fetch(`${BACKEND_URL}/api/rewrite`, {
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({ text: description, code, url, model })
+      try {
+        const response = await fetch("/api/rewrite", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ text, url, code, model })
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          outputArea.textContent = `${data.output}\n\n#AmazonFinds #AllAboutSavings ${data.productHashtag ? data.productHashtag : ""}\nReach Score: ${data.reachScore}`;
+        } else {
+          outputArea.textContent = `Error: ${data.error || "Unknown error"}`;
+        }
+      } catch (err) {
+        outputArea.textContent = "Network or server error: " + err.message;
+      }
     });
 
-    const data = await res.json();
-    if(!res.ok) throw new Error(data.error || 'AI service error');
+    copyBtn.addEventListener("click", () => {
+      navigator.clipboard.writeText(outputArea.textContent);
+      alert("Copied to clipboard!");
+    });
 
-    outputDiv.innerText = data.output;
-
-  } catch(err) {
-    console.error(err);
-    outputDiv.innerText = '⚠️ Error generating post: ' + err.message;
-  } finally {
-    generateBtn.disabled = false;
-    generateBtn.innerHTML = 'Generate Post';
-  }
-}
-
-function clearForm() {
-  document.getElementById('description').value='';
-  document.getElementById('code').value='';
-  document.getElementById('url').value='';
-  document.getElementById('postOutput').innerText='Your post will appear here...';
-}
-
-async function copyToClipboard(event){
-  const text = document.getElementById('postOutput').innerText;
-  if(!text || text.includes('Error') || text==='Your post will appear here...'){ alert('Generate post first!'); return; }
-  try {
-    await navigator.clipboard.writeText(text);
-    const btn = event.target;
-    const orig = btn.innerHTML;
-    btn.innerHTML='✅ Copied!';
-    btn.classList.add('copied');
-    setTimeout(()=>{btn.innerHTML=orig; btn.classList.remove('copied');},2000);
-  } catch(err){ alert('Copy failed'); }
-}
-</script>
+    clearBtn.addEventListener("click", () => {
+      document.getElementById("textInput").value = "";
+      document.getElementById("urlInput").value = "";
+      document.getElementById("codeInput").value = "";
+      outputArea.textContent = "";
+    });
+  </script>
 </body>
 </html>
