@@ -5,117 +5,38 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Amazon Post Generator</title>
 <style>
-  /* Background gradient and clean font */
-  body { 
-    font-family: 'Arial', sans-serif; 
-    background: linear-gradient(to bottom right, #f0f4f8, #d9e2ec); 
-    padding: 20px; 
-    margin: 0; 
-  }
-
-  h1 { 
-    color: #1e3a8a; 
-    text-align: center; 
-    margin-bottom: 20px;
-  }
-
-  .container { 
-    max-width: 500px; 
-    margin: auto; 
-    background: #ffffff; 
-    padding: 25px; 
-    border-radius: 15px; 
-    box-shadow: 0 8px 20px rgba(0,0,0,0.1); 
-  }
-
-  textarea, input, select { 
-    width: 100%; 
-    padding: 12px; 
-    margin: 10px 0 20px 0; 
-    border-radius: 10px; 
-    border: 1px solid #cbd5e0; 
-    font-size: 16px; 
-    transition: all 0.3s;
-  }
-  textarea:focus, input:focus, select:focus {
-    border-color: #3b82f6;
-    box-shadow: 0 0 5px rgba(59,130,246,0.5);
-    outline: none;
-  }
-
-  button { 
-    background: #3b82f6; 
-    color: #fff; 
-    border: none; 
-    padding: 14px; 
-    width: 100%; 
-    border-radius: 10px; 
-    font-size: 16px; 
-    cursor: pointer; 
-    transition: all 0.3s; 
-  }
-  button:hover { 
-    background: #2563eb; 
-  }
-  button:disabled { 
-    background: #94a3b8; 
-    cursor: not-allowed; 
-  }
-
-  .output { 
-    background: #e0f2fe; 
-    padding: 15px; 
-    border-radius: 12px; 
-    font-size: 16px; 
-    white-space: pre-wrap; 
-    line-height: 1.5; 
-    margin-bottom: 10px; 
-    color: #1e3a8a;
-  }
-  .output.error { background: #fee2e2; color: #b91c1c; }
-  .output.warning { background: #ffedd5; color: #c2410c; }
-
-  .copy-btn { background: #10b981; margin-top: 10px; }
-  .copy-btn:hover { background: #059669; }
-  .copy-btn.copied { background: #3b82f6; }
-
-  .clear-btn { background: #6b7280; margin-top: 10px; }
-  .clear-btn:hover { background: #4b5563; }
-
-  .button-group { display: flex; gap: 10px; margin-top: 10px; }
-  .button-group button { flex: 1; }
-
-  .loading { display: inline-block; }
-  .loading:after { content: '...'; animation: dots 1.5s steps(4, end) infinite; }
-  @keyframes dots { 0%, 20% { content: '.'; } 40% { content: '..'; } 60%, 100% { content: '...'; } }
-
-  #reachScore { font-weight:bold; margin-top: 10px; font-size: 16px; color: #1e40af; }
+body { font-family: Arial,sans-serif; background: #fff5f8; padding: 20px; margin:0; }
+h1 { color: #e91e63; text-align:center; }
+.container { max-width:500px; margin:auto; background:#fff; padding:20px; border-radius:12px; box-shadow:0 6px 12px rgba(0,0,0,0.1); }
+textarea,input,select { width:100%; padding:10px; margin:10px 0 20px; border-radius:8px; border:1px solid #ccc; font-size:16px; }
+button { background:#ff4081; color:#fff; border:none; padding:12px; width:100%; border-radius:8px; font-size:16px; cursor:pointer; transition:0.3s; }
+button:hover { background:#e91e63; }
+button:disabled { background:#ccc; cursor:not-allowed; }
+.output { background:#f0f4c3; padding:15px; border-radius:10px; font-size:16px; white-space:pre-wrap; line-height:1.5; margin-bottom:10px; }
+.copy-btn { background:#4caf50; margin-top:10px; }
+.copy-btn:hover { background:#45a049; }
+.clear-btn { background:#9e9e9e; margin-top:10px; }
+.clear-btn:hover { background:#757575; }
+.button-group { display:flex; gap:10px; margin-top:10px; }
+.button-group button { flex:1; }
+.loading { display:inline-block; }
+.loading:after { content:'...'; animation:dots 1.5s steps(4,end) infinite; }
+@keyframes dots { 0%,20%{content:'.';} 40%{content:'..';} 60%,100%{content:'...';} }
 </style>
 </head>
 <body>
-
 <div class="container">
   <h1>Amazon Post Generator</h1>
-  
-  <textarea id="description" rows="6" placeholder="Paste your product description here..."></textarea>
-  
+  <textarea id="description" rows="6" placeholder="Paste product description..."></textarea>
   <input id="code" type="text" placeholder="Discount Code (optional)">
-  <input id="url" type="text" placeholder="Product URL (required)">
-
+  <input id="url" type="text" placeholder="Product URL">
   <select id="modelSelect">
     <option value="mistralai/mistral-7b-instruct:free">Mistral 7B (Free)</option>
-    <option value="google/gemma-2-9b-it:free">Gemma 2 9B (Free)</option>
-    <option value="meta-llama/llama-3.2-3b-instruct:free">Llama 3.2 3B (Free)</option>
-    <option value="microsoft/phi-3-mini-128k-instruct:free">Phi-3 Mini (Free)</option>
   </select>
-
   <button id="generateBtn" onclick="generatePost()">Generate Post</button>
-
   <div class="output" id="postOutput">Your post will appear here...</div>
-  <div id="reachScore"></div>
-  
   <div class="button-group">
-    <button class="copy-btn" onclick="copyToClipboard()">📋 Copy</button>
+    <button class="copy-btn" onclick="copyToClipboard(event)">📋 Copy</button>
     <button class="clear-btn" onclick="clearForm()">🗑️ Clear</button>
   </div>
 </div>
@@ -124,48 +45,34 @@
 const BACKEND_URL = "https://amazon-post-generator-backend.onrender.com";
 
 async function generatePost() {
-  const generateBtn = document.getElementById('generateBtn');
   const outputDiv = document.getElementById('postOutput');
-  const reachDiv = document.getElementById('reachScore');
-
+  const generateBtn = document.getElementById('generateBtn');
   const description = document.getElementById('description').value.trim();
   const code = document.getElementById('code').value.trim();
   const url = document.getElementById('url').value.trim();
   const model = document.getElementById('modelSelect').value;
 
-  if (!description) return showError('Please enter a product description');
-  if (!url) return showError('Please enter a product URL');
+  if(!description || !url) { alert('Description and URL required'); return; }
 
   generateBtn.disabled = true;
   generateBtn.innerHTML = '<span class="loading">Generating</span>';
-  outputDiv.className = 'output';
-  outputDiv.innerText = 'Generating your post with AI...';
-  reachDiv.innerText = '';
+  outputDiv.innerText = 'Generating post...';
 
   try {
-    const response = await fetch(`${BACKEND_URL}/api/rewrite`, {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({ text: description, code, url, model }),
-      signal: AbortSignal.timeout(30000)
+    const res = await fetch(`${BACKEND_URL}/api/rewrite`, {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ text: description, code, url, model })
     });
 
-    if (!response.ok) throw new Error('AI service error');
+    const data = await res.json();
+    if(!res.ok) throw new Error(data.error || 'AI service error');
 
-    const data = await response.json();
-    const aiDescription = data.output || description;
-    const aiTitle = data.title || '';
-    const reachScore = data.reachScore || Math.floor(Math.random() * 50) + 50;
-    const productHashtag = data.productHashtag || '';
+    outputDiv.innerText = data.output;
 
-    const post = `${aiTitle ? aiTitle + "\n\n" : ""}${aiDescription}\n\n${code ? `Use code **${code}** at checkout.\n\n` : ""}${url}\n\nAs an Amazon Associate I earn from qualifying purchases.\n#AmazonFinds #AllAboutSavings ${productHashtag}`.trim();
-
-    outputDiv.innerText = post;
-    reachDiv.innerText = `Reach Score: ${reachScore}`;
-
-  } catch (err) {
+  } catch(err) {
     console.error(err);
-    showError('Failed to generate post. Try again.');
+    outputDiv.innerText = '⚠️ Error generating post: ' + err.message;
   } finally {
     generateBtn.disabled = false;
     generateBtn.innerHTML = 'Generate Post';
@@ -173,36 +80,24 @@ async function generatePost() {
 }
 
 function clearForm() {
-  document.getElementById('description').value = '';
-  document.getElementById('code').value = '';
-  document.getElementById('url').value = '';
-  document.getElementById('modelSelect').selectedIndex = 0;
-  document.getElementById('postOutput').innerText = 'Your post will appear here...';
-  document.getElementById('reachScore').innerText = '';
+  document.getElementById('description').value='';
+  document.getElementById('code').value='';
+  document.getElementById('url').value='';
+  document.getElementById('postOutput').innerText='Your post will appear here...';
 }
 
-function showError(message) {
-  const outputDiv = document.getElementById('postOutput');
-  outputDiv.className = 'output error';
-  outputDiv.innerText = '❌ ' + message;
-  setTimeout(() => { outputDiv.className = 'output'; }, 5000);
-}
-
-async function copyToClipboard() {
-  const postText = document.getElementById('postOutput').innerText;
-  if (!postText || postText.includes('Generating')) {
-    alert('Please generate a post first!');
-    return;
-  }
+async function copyToClipboard(event){
+  const text = document.getElementById('postOutput').innerText;
+  if(!text || text.includes('Error') || text==='Your post will appear here...'){ alert('Generate post first!'); return; }
   try {
-    await navigator.clipboard.writeText(postText);
-    alert('Post copied to clipboard!');
-  } catch (err) {
-    console.error(err);
-    alert('Failed to copy to clipboard.');
-  }
+    await navigator.clipboard.writeText(text);
+    const btn = event.target;
+    const orig = btn.innerHTML;
+    btn.innerHTML='✅ Copied!';
+    btn.classList.add('copied');
+    setTimeout(()=>{btn.innerHTML=orig; btn.classList.remove('copied');},2000);
+  } catch(err){ alert('Copy failed'); }
 }
 </script>
-
 </body>
 </html>
