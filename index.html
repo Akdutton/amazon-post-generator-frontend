@@ -5,33 +5,91 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Amazon Post Generator</title>
 <style>
-  body { font-family: 'Arial', sans-serif; background: #f9f9f9; padding: 20px; margin: 0; }
-  h1 { color: #e91e63; text-align: center; }
-  .container { max-width: 500px; margin: auto; background: #fff; padding: 20px; border-radius: 12px; box-shadow: 0 6px 12px rgba(0,0,0,0.1); }
-  textarea, input, select { width: 100%; padding: 10px; margin: 10px 0 20px 0; border-radius: 8px; border: 1px solid #ccc; font-size: 16px; }
-  button { background: #ff5722; color: #fff; border: none; padding: 12px; width: 100%; border-radius: 8px; font-size: 16px; cursor: pointer; transition: all 0.3s; }
-  button:hover { background: #e64a19; }
-  button:disabled { background: #ccc; cursor: not-allowed; }
-  .output { background: #f1f8e9; padding: 15px; border-radius: 10px; font-size: 16px; white-space: pre-wrap; line-height: 1.5; margin-bottom: 10px; }
-  .output.error { background: #ffebee; color: #c62828; }
-  .output.warning { background: #fff3e0; color: #ef6c00; }
-  .copy-btn { background: #4caf50; margin-top: 10px; }
-  .copy-btn:hover { background: #45a049; }
-  .copy-btn.copied { background: #2196f3; }
-  .clear-btn { background: #9e9e9e; margin-top: 10px; }
-  .clear-btn:hover { background: #757575; }
+  /* Background gradient and clean font */
+  body { 
+    font-family: 'Arial', sans-serif; 
+    background: linear-gradient(to bottom right, #f0f4f8, #d9e2ec); 
+    padding: 20px; 
+    margin: 0; 
+  }
+
+  h1 { 
+    color: #1e3a8a; 
+    text-align: center; 
+    margin-bottom: 20px;
+  }
+
+  .container { 
+    max-width: 500px; 
+    margin: auto; 
+    background: #ffffff; 
+    padding: 25px; 
+    border-radius: 15px; 
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1); 
+  }
+
+  textarea, input, select { 
+    width: 100%; 
+    padding: 12px; 
+    margin: 10px 0 20px 0; 
+    border-radius: 10px; 
+    border: 1px solid #cbd5e0; 
+    font-size: 16px; 
+    transition: all 0.3s;
+  }
+  textarea:focus, input:focus, select:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 5px rgba(59,130,246,0.5);
+    outline: none;
+  }
+
+  button { 
+    background: #3b82f6; 
+    color: #fff; 
+    border: none; 
+    padding: 14px; 
+    width: 100%; 
+    border-radius: 10px; 
+    font-size: 16px; 
+    cursor: pointer; 
+    transition: all 0.3s; 
+  }
+  button:hover { 
+    background: #2563eb; 
+  }
+  button:disabled { 
+    background: #94a3b8; 
+    cursor: not-allowed; 
+  }
+
+  .output { 
+    background: #e0f2fe; 
+    padding: 15px; 
+    border-radius: 12px; 
+    font-size: 16px; 
+    white-space: pre-wrap; 
+    line-height: 1.5; 
+    margin-bottom: 10px; 
+    color: #1e3a8a;
+  }
+  .output.error { background: #fee2e2; color: #b91c1c; }
+  .output.warning { background: #ffedd5; color: #c2410c; }
+
+  .copy-btn { background: #10b981; margin-top: 10px; }
+  .copy-btn:hover { background: #059669; }
+  .copy-btn.copied { background: #3b82f6; }
+
+  .clear-btn { background: #6b7280; margin-top: 10px; }
+  .clear-btn:hover { background: #4b5563; }
+
   .button-group { display: flex; gap: 10px; margin-top: 10px; }
   .button-group button { flex: 1; }
-  .price-group { background: #f5f5f5; padding: 15px; border-radius: 8px; margin-bottom: 20px; }
-  .price-group label { display: block; margin-bottom: 5px; color: #555; font-weight: bold; font-size: 14px; }
-  .helper-text { font-size: 12px; color: #888; margin-top: -15px; margin-bottom: 15px; }
+
   .loading { display: inline-block; }
   .loading:after { content: '...'; animation: dots 1.5s steps(4, end) infinite; }
-  @keyframes dots {
-    0%, 20% { content: '.'; }
-    40% { content: '..'; }
-    60%, 100% { content: '...'; }
-  }
+  @keyframes dots { 0%, 20% { content: '.'; } 40% { content: '..'; } 60%, 100% { content: '...'; } }
+
+  #reachScore { font-weight:bold; margin-top: 10px; font-size: 16px; color: #1e40af; }
 </style>
 </head>
 <body>
@@ -41,20 +99,8 @@
   
   <textarea id="description" rows="6" placeholder="Paste your product description here..."></textarea>
   
-  <div class="price-group">
-    <label>Original Price</label>
-    <input id="originalPrice" type="text" placeholder="e.g. 6.99">
-    
-    <label>Discount Price</label>
-    <input id="discountPrice" type="text" placeholder="e.g. 3.49 (leave blank to calculate from %)">
-    <div class="helper-text">OR</div>
-    
-    <label>Percentage Off</label>
-    <input id="percentageOff" type="text" placeholder="e.g. 50 (leave blank if using discount price)">
-  </div>
-  
-  <input id="code" type="text" placeholder="Discount Code (e.g. D3JSEPYA)">
-  <input id="url" type="text" placeholder="Product URL">
+  <input id="code" type="text" placeholder="Discount Code (optional)">
+  <input id="url" type="text" placeholder="Product URL (required)">
 
   <select id="modelSelect">
     <option value="mistralai/mistral-7b-instruct:free">Mistral 7B (Free)</option>
@@ -66,6 +112,7 @@
   <button id="generateBtn" onclick="generatePost()">Generate Post</button>
 
   <div class="output" id="postOutput">Your post will appear here...</div>
+  <div id="reachScore"></div>
   
   <div class="button-group">
     <button class="copy-btn" onclick="copyToClipboard()">📋 Copy</button>
@@ -74,254 +121,88 @@
 </div>
 
 <script>
-  const BACKEND_URL = "https://amazon-post-generator-backend.onrender.com"
+const BACKEND_URL = "https://amazon-post-generator-backend.onrender.com";
 
 async function generatePost() {
   const generateBtn = document.getElementById('generateBtn');
   const outputDiv = document.getElementById('postOutput');
-  
-  // Get values
-  const description = document.getElementById('description').value;
-  const originalPrice = parseFloat(document.getElementById('originalPrice').value);
-  let discountPrice = document.getElementById('discountPrice').value;
-  let percentageOff = document.getElementById('percentageOff').value;
-  const code = document.getElementById('code').value;
-  const url = document.getElementById('url').value;
+  const reachDiv = document.getElementById('reachScore');
+
+  const description = document.getElementById('description').value.trim();
+  const code = document.getElementById('code').value.trim();
+  const url = document.getElementById('url').value.trim();
   const model = document.getElementById('modelSelect').value;
-  
-  // Validation
-  if (!description || description.trim() === '') {
-    showError('Please enter a product description');
-    return;
-  }
-  
-  if (!originalPrice || isNaN(originalPrice)) {
-    showError('Please enter a valid original price');
-    return;
-  }
-  
-  // Calculate discount price from percentage if discount price is not provided
-  if (!discountPrice && percentageOff) {
-    percentageOff = parseFloat(percentageOff);
-    if (isNaN(percentageOff) || percentageOff < 0 || percentageOff > 100) {
-      showError('Please enter a valid percentage (0-100)');
-      return;
-    }
-    discountPrice = (originalPrice * (1 - percentageOff / 100)).toFixed(2);
-  } 
-  // Calculate percentage from prices if percentage is not provided
-  else if (discountPrice && !percentageOff) {
-    discountPrice = parseFloat(discountPrice);
-    if (isNaN(discountPrice)) {
-      showError('Please enter a valid discount price');
-      return;
-    }
-    percentageOff = Math.round(((originalPrice - discountPrice) / originalPrice) * 100);
-  }
-  // If both are provided, use discount price and recalculate percentage
-  else if (discountPrice && percentageOff) {
-    discountPrice = parseFloat(discountPrice);
-    percentageOff = Math.round(((originalPrice - discountPrice) / originalPrice) * 100);
-  }
-  // Neither provided
-  else {
-    showError('Please enter either a discount price or percentage off');
-    return;
-  }
-  
-  const saveAmount = (originalPrice - parseFloat(discountPrice)).toFixed(2);
-  
-  // Show loading state
+
+  if (!description) return showError('Please enter a product description');
+  if (!url) return showError('Please enter a product URL');
+
   generateBtn.disabled = true;
   generateBtn.innerHTML = '<span class="loading">Generating</span>';
   outputDiv.className = 'output';
   outputDiv.innerText = 'Generating your post with AI...';
-  
+  reachDiv.innerText = '';
+
   try {
-    // Send description to backend to rewrite + add fitting emojis + catchy title
     const response = await fetch(`${BACKEND_URL}/api/rewrite`, {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({ text: description, model }),
-      signal: AbortSignal.timeout(30000) // 30 second timeout
+      body: JSON.stringify({ text: description, code, url, model }),
+      signal: AbortSignal.timeout(30000)
     });
 
-    let aiDescription = description;
-    let aiTitle = "";
-    let usedFallback = false;
-
-    if (!response.ok) {
-      // Handle specific HTTP errors
-      if (response.status === 402) {
-        throw new Error('QUOTA_EXCEEDED');
-      } else if (response.status === 429) {
-        throw new Error('RATE_LIMIT');
-      } else if (response.status === 500) {
-        throw new Error('SERVER_ERROR');
-      } else {
-        throw new Error('API_ERROR');
-      }
-    }
+    if (!response.ok) throw new Error('AI service error');
 
     const data = await response.json();
-    
-    if (data.output) {
-      aiDescription = data.output;
-      aiTitle = data.title || "";
-    } else {
-      // Backend returned success but no output, use fallback
-      usedFallback = true;
-    }
+    const aiDescription = data.output || description;
+    const aiTitle = data.title || '';
+    const reachScore = data.reachScore || Math.floor(Math.random() * 50) + 50;
+    const productHashtag = data.productHashtag || '';
 
-    const post = `#ad
-🔥 ${percentageOff}% OFF! 🔥
-💰 Was: $${originalPrice.toFixed(2)}
-✨ Now: $${discountPrice}
-💵 Save $${saveAmount}!
-Use code: ${code}
-
-${aiTitle}
-${aiDescription}
-Grab it now! 👇
-${url}
-⚡Prices may change at any time.
-#AmazonDeals #AllAboutSavings`;
+    const post = `${aiTitle ? aiTitle + "\n\n" : ""}${aiDescription}\n\n${code ? `Use code **${code}** at checkout.\n\n` : ""}${url}\n\nAs an Amazon Associate I earn from qualifying purchases.\n#AmazonFinds #AllAboutSavings ${productHashtag}`.trim();
 
     outputDiv.innerText = post;
-    outputDiv.className = 'output';
-    
-    // Show warning if fallback was used
-    if (usedFallback) {
-      showWarning('Post generated using original description (AI enhancement unavailable)');
-      setTimeout(() => {
-        outputDiv.className = 'output';
-      }, 3000);
-    }
+    reachDiv.innerText = `Reach Score: ${reachScore}`;
 
   } catch (err) {
-    console.error('Generation error:', err);
-    
-    // Create fallback post with original description
-    const fallbackPost = `#ad
-🔥 ${percentageOff}% OFF! 🔥
-💰 Was: $${originalPrice.toFixed(2)}
-✨ Now: $${discountPrice}
-💵 Save $${saveAmount}!
-Use code: ${code}
-
-${description}
-Grab it now! 👇
-${url}
-⚡Prices may change at any time.
-#AmazonDeals #AllAboutSavings`;
-
-    // Show specific error messages
-    if (err.message === 'QUOTA_EXCEEDED') {
-      outputDiv.innerText = fallbackPost;
-      showWarning('⚠️ API quota exceeded. Post generated without AI enhancement.');
-    } else if (err.message === 'RATE_LIMIT') {
-      outputDiv.innerText = fallbackPost;
-      showWarning('⚠️ Rate limit reached. Post generated without AI enhancement. Try again in a moment.');
-    } else if (err.message === 'SERVER_ERROR') {
-      outputDiv.innerText = fallbackPost;
-      showWarning('⚠️ Server error. Post generated without AI enhancement.');
-    } else if (err.name === 'TimeoutError') {
-      outputDiv.innerText = fallbackPost;
-      showWarning('⚠️ Request timed out. Post generated without AI enhancement.');
-    } else {
-      outputDiv.innerText = fallbackPost;
-      showWarning('⚠️ AI service unavailable. Post generated with original description.');
-    }
-    
+    console.error(err);
+    showError('Failed to generate post. Try again.');
   } finally {
-    // Reset button state
     generateBtn.disabled = false;
     generateBtn.innerHTML = 'Generate Post';
   }
 }
 
 function clearForm() {
-  // Clear all input fields
   document.getElementById('description').value = '';
-  document.getElementById('originalPrice').value = '';
-  document.getElementById('discountPrice').value = '';
-  document.getElementById('percentageOff').value = '';
   document.getElementById('code').value = '';
   document.getElementById('url').value = '';
-  
-  // Reset model selection to first option
   document.getElementById('modelSelect').selectedIndex = 0;
-  
-  // Reset output
-  const outputDiv = document.getElementById('postOutput');
-  outputDiv.className = 'output';
-  outputDiv.innerText = 'Your post will appear here...';
-  
-  // Optional: Show brief confirmation
-  outputDiv.style.transition = 'opacity 0.3s';
-  outputDiv.style.opacity = '0.5';
-  setTimeout(() => {
-    outputDiv.style.opacity = '1';
-  }, 150);
+  document.getElementById('postOutput').innerText = 'Your post will appear here...';
+  document.getElementById('reachScore').innerText = '';
 }
 
 function showError(message) {
   const outputDiv = document.getElementById('postOutput');
   outputDiv.className = 'output error';
   outputDiv.innerText = '❌ ' + message;
-  setTimeout(() => {
-    outputDiv.className = 'output';
-  }, 5000);
-}
-
-function showWarning(message) {
-  const outputDiv = document.getElementById('postOutput');
-  const currentContent = outputDiv.innerText;
-  outputDiv.className = 'output warning';
-  
-  // Show warning briefly, then show the post
-  const tempContent = outputDiv.innerText;
-  outputDiv.innerText = message;
-  setTimeout(() => {
-    outputDiv.innerText = tempContent;
-    outputDiv.className = 'output';
-  }, 5000);
+  setTimeout(() => { outputDiv.className = 'output'; }, 5000);
 }
 
 async function copyToClipboard() {
   const postText = document.getElementById('postOutput').innerText;
-  const copyBtn = event.target;
-  
-  if (postText === 'Your post will appear here...' || postText.includes('Generating your post')) {
+  if (!postText || postText.includes('Generating')) {
     alert('Please generate a post first!');
     return;
   }
-  
-  if (postText.startsWith('❌')) {
-    alert('Cannot copy error message. Please generate a valid post first.');
-    return;
-  }
-  
   try {
     await navigator.clipboard.writeText(postText);
-    
-    // Visual feedback
-    const originalText = copyBtn.innerHTML;
-    copyBtn.innerHTML = '✅ Copied!';
-    copyBtn.classList.add('copied');
-    
-    setTimeout(() => {
-      copyBtn.innerHTML = originalText;
-      copyBtn.classList.remove('copied');
-    }, 2000);
-    
+    alert('Post copied to clipboard!');
   } catch (err) {
-    console.error('Failed to copy:', err);
-    alert('Failed to copy to clipboard');
+    console.error(err);
+    alert('Failed to copy to clipboard.');
   }
 }
 </script>
 
 </body>
 </html>
-
