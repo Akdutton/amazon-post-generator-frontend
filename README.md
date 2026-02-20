@@ -12,7 +12,6 @@ Functional frontend (Vanilla JS UI + async calls).
 ## Demo Screenshots
 ![Home UI](APG%20Home.png?raw=true)
 
-![AI Output](APG%20AI.png?raw=true)
 ## Real Frontend Code (From index.html)
 ``` js
 generateBtn.addEventListener("click", async () => {
