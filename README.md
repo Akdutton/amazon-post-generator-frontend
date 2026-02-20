@@ -12,10 +12,9 @@ Functional frontend (Vanilla JS UI + async calls).
 2. Backend (Private): Prompt engineering → OpenRouter AI post gen.
 
 ## Demo Screenshots
-![AGP Home](https://github.com/Akdutton/amazon-post-generator-frontend/blob/main/screenshots/AGP%20Home.png?raw=true)
+![Home UI](AGP%20Home.png?raw=true)
 
-![AGP AI](https://github.com/Akdutton/amazon-post-generator-frontend/blob/main/screenshots/AGP%20Ai.png?raw=true)
-
+![AI Output](AGP%20Ai.png?raw=true)
 ## Real Frontend Code (From index.html)
 ``` js
 generateBtn.addEventListener("click", async () => {
