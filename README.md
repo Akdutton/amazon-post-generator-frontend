@@ -1,6 +1,4 @@
-# Amazon Post Generator – Live Vanilla JS Frontend
-
-**Live Demo**: https://amazon-post-generator-frontend.vercel.app/
+# Amazon Post Generator – Vanilla JS Frontend
 
 Functional frontend (Vanilla JS UI + async calls).  
 **Server Backend** (private Render): Prompt engineering for OpenRouter LLM.
